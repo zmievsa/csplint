@@ -1,12 +1,17 @@
 [tool.poetry]
-name = "any-python-template"
+name = "csplint"
 version = "0.1.0"
 description = ""
 authors = ["Stanislav Zmiev <szmiev2000@gmail.com>"]
 license = "MIT"
 
+[tool.poetry.plugins."flake8.extension"]
+CSP = 'csplint:CSPPlugin'
+
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.10"
+tomli = "*"
+
 
 [tool.poetry.dev-dependencies]
 pyupgrade = "*"
