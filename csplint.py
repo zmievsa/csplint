@@ -1,10 +1,10 @@
 import ast
+import json
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from subprocess import run
 from typing import Iterable
-
-from tomli import loads
 
 
 def main(argv: Sequence[str] = sys.argv[1:]):
@@ -12,7 +12,11 @@ def main(argv: Sequence[str] = sys.argv[1:]):
     pyproject_path = root_dir / "package/pyproject.toml"
     if not pyproject_path.exists():
         raise SystemExit(0)
-    pyproject = loads(pyproject_path.read_text())
+    result = run(["tomljson", str(pyproject_path)], text=True, shell=True)
+    if result.returncode != 0:
+        raise SystemExit(result.stderr)
+
+    pyproject = json.loads(result.stdout)
     main_package_name = pyproject["tool"]["poetry"]["name"]
     package_names = {dct["include"] for dct in pyproject["tool"]["poetry"].get("packages", [])} or {main_package_name}
 
